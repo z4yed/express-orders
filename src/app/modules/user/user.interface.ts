@@ -20,6 +20,7 @@ export interface IUser {
   };
   age: number;
   email: string;
+  isActive: boolean;
   hobbies: string[];
   address: IAddress;
   orders?: IOrder[];

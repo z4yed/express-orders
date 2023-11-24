@@ -14,8 +14,12 @@ const orderSchema = new Schema<IOrder>({
 });
 
 const userSchema = new Schema<IUser>({
-  userId: { type: Number, required: true },
-  username: { type: String, required: true },
+  userId: {
+    type: Number,
+    required: [true, 'this is required'],
+    unique: true,
+  },
+  username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   fullName: {
     firstName: { type: String, required: true },
@@ -23,6 +27,7 @@ const userSchema = new Schema<IUser>({
   },
   age: { type: Number },
   email: { type: String, required: true },
+  isActive: { type: Boolean, required: true },
   hobbies: { type: [String] },
   address: addressSchema,
   orders: {
