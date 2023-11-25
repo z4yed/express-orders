@@ -1,3 +1,5 @@
+// custom error class for handling database related errors
+
 class DBError extends Error {
   public code: number;
   constructor(message: string, code?: number) {

@@ -21,13 +21,8 @@ const userUpdateValidationSchema = z.object({
   age: z.number().optional(),
   email: z.string().email().optional(),
   isActive: z.boolean().optional(),
-  hobbies: z
-    .string()
-    .array()
-    .optional()
-    .refine((value) => value === undefined || value.length > 0, {
-      message: 'hobbies must be array with at least one string',
-    }),
+  hobbies: z.string().array().optional(),
+
   address: addressValidationSchema,
 });
 

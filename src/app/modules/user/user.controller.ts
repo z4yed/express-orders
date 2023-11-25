@@ -37,7 +37,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.status(ResponseCode.CREATED).json({
       success: true,
-      message: 'User created successfully.',
+      message: 'User created successfully!',
       data: userResponse,
     });
   } catch (error) {
@@ -56,6 +56,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.status(ResponseCode.HTTP_OK).json({
       success: true,
+      message: 'User fetched successfully!',
       data: user,
     });
   } catch (error) {
@@ -96,7 +97,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.status(ResponseCode.HTTP_OK).json({
       success: true,
-      message: 'User updated successfully.',
+      message: 'User updated successfully!',
       data: updatedUser,
     });
   } catch (error) {
@@ -200,9 +201,9 @@ const getTotalPrice = async (
 };
 
 export const UserController = {
+  getUsersList,
   createUser,
   getUser,
-  getUsersList,
   updateUser,
   deleteUser,
   addOrder,

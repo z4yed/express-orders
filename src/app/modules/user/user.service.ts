@@ -107,6 +107,7 @@ const getTotalPrice = async (userId: number) => {
     throw new DBError("User doesn't exists.", ResponseCode.NOT_FOUND);
   }
 
+  // applying match, unwind and group aggregation stages
   return await User.aggregate([
     { $match: { userId } },
     { $unwind: '$orders' },

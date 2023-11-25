@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import DBError from './DBError';
 
+// middleware to handle all type of errors
 const globalErrorHandler = (
   err: Error,
   req: Request,
@@ -27,8 +28,6 @@ const globalErrorHandler = (
       },
     });
   }
-
-  console.log(err);
 
   return res.status(500).json({
     success: false,
