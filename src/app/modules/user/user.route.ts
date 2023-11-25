@@ -13,5 +13,6 @@ router.delete('/:userId', UserController.deleteUser);
 // order management routes
 router.get('/:userId/orders', UserController.getOrders);
 router.put('/:userId/orders', UserController.addOrder);
+router.get('/:userId/orders/total-price', UserController.getTotalPrice);
 
 export const UserRoutes = router;

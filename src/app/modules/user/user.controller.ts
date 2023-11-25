@@ -168,6 +168,37 @@ const getOrders = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getTotalPrice = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = Number(req.params.userId);
+    if (isNaN(userId)) {
+      throw new Error('Invalid request parameter : userId');
+    }
+
+    const result = await UserService.getTotalPrice(userId);
+
+    let totalPrice: number = 0;
+    if (result.length) {
+      // extract the total price field from the first array object
+      totalPrice = result[0].totalPrice;
+    }
+
+    return res.status(ResponseCode.HTTP_OK).json({
+      success: true,
+      message: 'Total price calculated successfully!',
+      data: {
+        totalPrice,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const UserController = {
   createUser,
   getUser,
@@ -176,4 +207,5 @@ export const UserController = {
   deleteUser,
   addOrder,
   getOrders,
+  getTotalPrice,
 };
