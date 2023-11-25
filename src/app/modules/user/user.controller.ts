@@ -1,10 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserService } from './user.service';
 import UserValidationSchema from './user.store.validation';
-import { z } from 'zod';
-import { DBError } from '../../errors';
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payload = req.body;
 
@@ -39,36 +37,12 @@ const createUser = async (req: Request, res: Response) => {
       message: 'User created successfully.',
       data: userResponse,
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    if (err instanceof z.ZodError) {
-      return res.status(422).json({
-        success: false,
-        message: 'User store validation failed.',
-        error: err.format(),
-      });
-    }
-
-    if (err instanceof DBError) {
-      return res.status(err.code).json({
-        success: false,
-        message: err.message,
-        error: {
-          code: err.code,
-          description: err.message,
-        },
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: 'Something went wrong',
-      error: err,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
-const getUser = async (req: Request, res: Response) => {
+const getUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserService.getUser(Number(req.params.userId));
 
@@ -76,29 +50,16 @@ const getUser = async (req: Request, res: Response) => {
       success: true,
       data: user,
     });
-  } catch (err: any) {
-    console.log(err);
-
-    if (err instanceof DBError) {
-      return res.status(err.code).json({
-        success: false,
-        message: err.message,
-        error: {
-          code: err.code,
-          description: err.message,
-        },
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: 'Something went wrong',
-      error: err,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
-const getUsersList = async (req: Request, res: Response) => {
+const getUsersList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = await UserService.getUsersList();
 
@@ -106,25 +67,8 @@ const getUsersList = async (req: Request, res: Response) => {
       success: true,
       data: user,
     });
-  } catch (err: any) {
-    console.log(err);
-
-    if (err instanceof DBError) {
-      return res.status(err.code).json({
-        success: false,
-        message: err.message,
-        error: {
-          code: err.code,
-          description: err.message,
-        },
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: 'Something went wrong',
-      error: err,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 

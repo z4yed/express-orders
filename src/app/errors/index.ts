@@ -1,3 +1,4 @@
 import DBError from './DBError';
+import globalErrorHandler from './globalHandler';
 
-export { DBError };
+export { DBError, globalErrorHandler };
