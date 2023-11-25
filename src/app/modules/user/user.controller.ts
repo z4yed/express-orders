@@ -137,13 +137,31 @@ const addOrder = async (req: Request, res: Response, next: NextFunction) => {
 
     const orderData = orderStoreValidation.parse(req.body);
 
-    const result = await UserService.addOrder(userId, orderData);
-    console.log(result);
+    await UserService.addOrder(userId, orderData);
 
     return res.status(ResponseCode.HTTP_OK).json({
       success: true,
       message: 'Order created successfully!',
       data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getOrders = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = Number(req.params.userId);
+    if (isNaN(userId)) {
+      throw new Error('Invalid request parameter : userId');
+    }
+
+    const result = await UserService.getOrders(userId);
+
+    return res.status(ResponseCode.HTTP_OK).json({
+      success: true,
+      message: 'Order fetched successfully!',
+      data: result,
     });
   } catch (error) {
     next(error);
@@ -157,4 +175,5 @@ export const UserController = {
   updateUser,
   deleteUser,
   addOrder,
+  getOrders,
 };

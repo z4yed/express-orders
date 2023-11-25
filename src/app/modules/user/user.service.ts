@@ -94,6 +94,14 @@ const addOrder = async (userId: number, orderData: IOrder) => {
   );
 };
 
+const getOrders = async (userId: number) => {
+  if (!(await User.getUserIfExists(userId))) {
+    throw new DBError("User doesn't exists.", ResponseCode.NOT_FOUND);
+  }
+
+  return await User.findOne({ userId }).select({ orders: 1 });
+};
+
 export const UserService = {
   createUser,
   getUser,
@@ -101,4 +109,5 @@ export const UserService = {
   deleteUser,
   updateUser,
   addOrder,
+  getOrders,
 };
