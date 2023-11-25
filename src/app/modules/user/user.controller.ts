@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import UserValidationSchema from './user.store.validation';
 import { z } from 'zod';
+import { DBError } from '../../errors';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -24,13 +25,24 @@ const createUser = async (req: Request, res: Response) => {
         message: 'User store validation failed.',
         error: err.format(),
       });
-    } else {
-      return res.status(500).json({
+    }
+
+    if (err instanceof DBError) {
+      return res.status(err.code).json({
         success: false,
-        message: 'Something went wrong',
-        error: err,
+        message: err.message,
+        error: {
+          code: err.code,
+          description: err.message,
+        },
       });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: err,
+    });
   }
 };
 

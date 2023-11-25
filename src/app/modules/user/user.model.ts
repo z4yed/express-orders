@@ -1,5 +1,6 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import { IAddress, IOrder, IUser } from './user.interface';
+import { hashPassword } from '../../utils';
 
 const addressSchema = new Schema<IAddress>({
   street: { type: String, required: true },
@@ -13,7 +14,12 @@ const orderSchema = new Schema<IOrder>({
   quantity: { type: Number, required: true },
 });
 
-const userSchema = new Schema<IUser>({
+interface UserModel extends Model<IUser> {
+  // eslint-disable-next-line no-unused-vars
+  getUserIfExists(id: number): Promise<IUser | null>;
+}
+
+const userSchema = new Schema<IUser, UserModel>({
   userId: {
     type: Number,
     required: [true, 'this is required'],
@@ -35,4 +41,14 @@ const userSchema = new Schema<IUser>({
   },
 });
 
-export const User = model<IUser>('User', userSchema);
+userSchema.statics.getUserIfExists = async function (id: string) {
+  return await User.findOne({ userId: id });
+};
+
+userSchema.pre('save', async function () {
+  if (this.password) {
+    this.password = await hashPassword(this.password);
+  }
+});
+
+export const User = model<IUser, UserModel>('User', userSchema);
