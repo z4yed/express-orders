@@ -6,7 +6,7 @@ const addressValidationSchema = z.object({
   country: z.string().min(1),
 });
 
-const UserValidationSchema = z.object({
+const UserStoreValidationSchema = z.object({
   userId: z.number(),
   username: z.string(),
   password: z.string(),
@@ -15,10 +15,10 @@ const UserValidationSchema = z.object({
     lastName: z.string().min(1),
   }),
   age: z.number(),
-  email: z.string(),
+  email: z.string().email(),
   isActive: z.boolean(),
   hobbies: z.string().array(),
   address: addressValidationSchema,
 });
 
-export default UserValidationSchema;
+export default UserStoreValidationSchema;
