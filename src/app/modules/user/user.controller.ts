@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from './user.service';
-import UserStoreValidationSchema from './user.store.validation';
-import UserUpdateValidationSchema from './user.update.validation';
+import userStoreValidationSchema from './user.store.validation';
+import userUpdateValidationSchema from './user.update.validation';
 import ResponseCode from '../../constants/responseCodes';
+import orderStoreValidation from './order.store.validation';
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payload = req.body;
 
-    const zodParsedUserData = UserStoreValidationSchema.parse(payload);
+    const zodParsedUserData = userStoreValidationSchema.parse(payload);
 
     const user = await UserService.createUser(zodParsedUserData);
 
@@ -89,7 +90,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // parse request body with zod
-    const zodParsedData = UserUpdateValidationSchema.parse(req.body);
+    const zodParsedData = userUpdateValidationSchema.parse(req.body);
 
     const updatedUser = await UserService.updateUser(userId, zodParsedData);
 
@@ -126,10 +127,34 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// order management
+const addOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = Number(req.params.userId);
+    if (isNaN(userId)) {
+      throw new Error('Invalid request parameter : userId');
+    }
+
+    const orderData = orderStoreValidation.parse(req.body);
+
+    const result = await UserService.addOrder(userId, orderData);
+    console.log(result);
+
+    return res.status(ResponseCode.HTTP_OK).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const UserController = {
   createUser,
   getUser,
   getUsersList,
   updateUser,
   deleteUser,
+  addOrder,
 };

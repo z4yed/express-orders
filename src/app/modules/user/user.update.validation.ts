@@ -8,7 +8,7 @@ const addressValidationSchema = z
   })
   .optional();
 
-const UserUpdateValidationSchema = z.object({
+const userUpdateValidationSchema = z.object({
   userId: z.number().optional(),
   username: z.string().optional(),
   password: z.string().optional(),
@@ -31,4 +31,4 @@ const UserUpdateValidationSchema = z.object({
   address: addressValidationSchema,
 });
 
-export default UserUpdateValidationSchema;
+export default userUpdateValidationSchema;

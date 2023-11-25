@@ -1,7 +1,7 @@
 import ResponseCode from '../../constants/responseCodes';
 import { DBError } from '../../errors';
 import { hashPassword } from '../../utils';
-import { IUser } from './user.interface';
+import { IOrder, IUser } from './user.interface';
 import { User } from './user.model';
 
 const createUser = async (user: IUser) => {
@@ -83,10 +83,22 @@ const deleteUser = async (userId: number) => {
   return await User.deleteOne({ userId });
 };
 
+const addOrder = async (userId: number, orderData: IOrder) => {
+  if (!(await User.getUserIfExists(userId))) {
+    throw new DBError("User doesn't exists.", ResponseCode.NOT_FOUND);
+  }
+
+  return await User.findOneAndUpdate(
+    { userId },
+    { $addToSet: { orders: orderData } },
+  );
+};
+
 export const UserService = {
   createUser,
   getUser,
   getUsersList,
   deleteUser,
   updateUser,
+  addOrder,
 };
