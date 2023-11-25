@@ -15,8 +15,9 @@ const orderSchema = new Schema<IOrder>({
 });
 
 interface UserModel extends Model<IUser> {
+  // get user document by id or email
   // eslint-disable-next-line no-unused-vars
-  getUserIfExists(id: number): Promise<IUser | null>;
+  getUserIfExists(key: number | string): Promise<IUser | null>;
 }
 
 const userSchema = new Schema<IUser, UserModel>({
@@ -41,8 +42,16 @@ const userSchema = new Schema<IUser, UserModel>({
   },
 });
 
-userSchema.statics.getUserIfExists = async function (id: string) {
-  return await User.findOne({ userId: id });
+userSchema.statics.getUserIfExists = async function (key: string | number) {
+  let query;
+
+  if (typeof key === 'number') {
+    query = { userId: key };
+  } else {
+    query = { username: key };
+  }
+
+  return await User.findOne(query);
 };
 
 userSchema.pre('save', async function () {
